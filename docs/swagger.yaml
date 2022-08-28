@@ -1,0 +1,398 @@
+basePath: /
+definitions:
+  domain.Checklist:
+    properties:
+      description:
+        example: Rocket Launch Description
+        type: string
+      id:
+        example: 1
+        type: integer
+      status:
+        enum:
+        - active
+        - disabled
+        example: active
+        type: string
+      title:
+        example: Rocket Launch
+        type: string
+      updated_at:
+        type: string
+    required:
+    - id
+    - title
+    type: object
+  domain.UpdateChecklist:
+    properties:
+      description:
+        example: Description Checklist
+        type: string
+      status:
+        enum:
+        - active
+        - disabled
+        example: active
+        type: string
+      title:
+        example: Title Checklist
+        type: string
+    type: object
+  domain.User:
+    properties:
+      email:
+        example: ae@ae.ae
+        type: string
+      first_name:
+        example: Andy
+        type: string
+      last_name:
+        example: Sokol
+        type: string
+      password:
+        example: jyWtbKg76by
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
+  handler_api.ChecklistsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.Checklist'
+        type: array
+    type: object
+  handler_api.idResponse:
+    properties:
+      id:
+        example: 1
+        type: integer
+    type: object
+  handler_api.signInInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  handler_api.statusResponse:
+    properties:
+      status:
+        example: Ok
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: API Server for AquaHub
+  title: AquaHub API
+  version: "1.0"
+paths:
+  /api/lists:
+    get:
+      consumes:
+      - application/json
+      description: get all lists
+      operationId: get-all-lists
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler_api.ChecklistsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Checklists
+      tags:
+      - Checklists
+    post:
+      consumes:
+      - application/json
+      description: create checklist
+      operationId: create-list
+      parameters:
+      - description: Checklist info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateChecklist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler_api.idResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Checklist
+      tags:
+      - Checklists
+  /api/lists/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: get delete by id
+      operationId: get-delete-by-id
+      parameters:
+      - description: Checklist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Checklist By Id
+      tags:
+      - Checklists
+    get:
+      consumes:
+      - application/json
+      description: get list by id
+      operationId: get-list-by-id
+      parameters:
+      - description: Checklist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Checklist'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Checklist By Id
+      tags:
+      - Checklists
+    put:
+      consumes:
+      - application/json
+      description: get update by id
+      operationId: get-update-by-id
+      parameters:
+      - description: Checklist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Checklist info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateChecklist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Checklist By Id
+      tags:
+      - Checklists
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: login
+      operationId: login
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler_api.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      summary: SignIn
+      tags:
+      - Authentication
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create account
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      summary: SignUp
+      tags:
+      - Authentication
+  /v1/sensor:
+    get:
+      description: ?api_key=aqen104Ur2zNX1Ykwv4:a39831d103eb4c0d &f100=0.01&f101=28&f102=0&f103=17.51&f104=15.52&f105=1072
+        &f200=17.52&f201=134.06&f202=317&f203=25.7000 &f400=3.27&f401=0.39&f402=3.26&f403=0.39&f404=0.08&f405=0.00
+        &f4002=0.08 &f11000=504&f10001=24.31&f10004=0
+      operationId: aquahub-sensor-data-store
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler_api.statusResponse'
+      summary: AquaHub sensors data store
+      tags:
+      - AquaHub
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
