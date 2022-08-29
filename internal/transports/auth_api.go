@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/AquaEngineering/AquaHub/internal/domain"
-	"github.com/AquaEngineering/AquaHub/pkg/jwt_processing"
+	"github.com/google/uuid"
 
 	"github.com/gin-gonic/gin"
 )
@@ -50,15 +50,18 @@ func (h *Handler) signUp(ctx *gin.Context) {
 		return
 	}
 
-	jwt_token, err := jwt_processing.GenerateToken(id)
+	sessionName, _ := uuid.NewRandom()
+	session, _ := h.sessionStore.Get(ctx.Request, sessionName.String())
+	session.Values["userId"] = id
+	err = session.Save(ctx.Request, ctx.Writer)
 	if err != nil {
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error()) // http.StatusInternalServerError = 500
+		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	// Если пользователь существует, то в ответе получаем токен.
 	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"token": "Bearer " + jwt_token,
+		"status": "Authenticate Ok",
 	})
 }
 
@@ -90,7 +93,6 @@ func (h *Handler) signIn(ctx *gin.Context) {
 		return
 	}
 
-	var jwt_token string
 	user, err := h.serviceAuthentications.Authenticate(input.Email, input.Password)
 	if err != nil {
 		// Возвращаем ошибку SQL из БД
@@ -98,7 +100,10 @@ func (h *Handler) signIn(ctx *gin.Context) {
 		return
 	}
 
-	jwt_token, err = jwt_processing.GenerateToken(user.ID)
+	session, _ := h.sessionStore.Get(ctx.Request, "session")
+
+	session.Values["userId"] = user.ID
+	err = session.Save(ctx.Request, ctx.Writer)
 	if err != nil {
 		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -106,6 +111,6 @@ func (h *Handler) signIn(ctx *gin.Context) {
 
 	// Если пользователь существует, то в ответе получаем токен.
 	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"token": "Bearer " + jwt_token,
+		"status": "Authenticate Ok",
 	})
 }

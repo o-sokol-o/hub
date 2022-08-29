@@ -12,9 +12,9 @@ import (
 // @description                API Server for AquaHub
 // @host                       localhost:8000
 // @BasePath                   /
-// @securityDefinitions.apikey ApiKeyAuth
-// @in                         header
-// @name                       Authorization
+// securityDefinitions.apikey ApiKeyAuth
+// in                         header
+// name                       Authorization
 func main() {
 
 	var log = logrus.New()

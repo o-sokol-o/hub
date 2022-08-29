@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/pborman/uuid"
 
 	cmd_line "github.com/AquaEngineering/AquaHub/pkg/cmd_line"
 	database "github.com/AquaEngineering/AquaHub/pkg/database/postgres"
@@ -207,7 +208,10 @@ func NewApplication(log *logrus.Logger) (*AppContext, error) {
 			services.NewServices(
 				repositories.NewRepositories(app.log, app.cacheMemory, app.masterDB)))
 
-	err := app.handlers.InitRoutes()
+	sk := uuid.NewRandom()
+	sessionKey := sk.String()
+
+	err := app.handlers.InitRoutes(sessionKey)
 	if err != nil {
 		log.Printf("InitRoutes error: %s", err.Error())
 		return nil, err

@@ -6,15 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 
-	"github.com/AquaEngineering/AquaHub/pkg/jwt_processing"
 	"github.com/gin-gonic/gin"
 )
 
 const (
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
+	userSession         = "userSession"
 )
 
 func (h *Handler) middleware_PrintHeader(ctx *gin.Context) {
@@ -34,42 +33,21 @@ func (h *Handler) middleware_PrintHeader(ctx *gin.Context) {
 
 // Нам нужно получить значение из хедера авторизации, валидировать его,
 // парсить токен и записать пользователя в контекст.
-func (h *Handler) userIdentity_middleware(c *gin.Context) {
+func (h *Handler) userIdentity_middleware(ctx *gin.Context) {
 
-	// Получим хедер авторизации, валидируем его, что он не пустой.
-	header := c.GetHeader(authorizationHeader)
-	if header == "" {
-		h.newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
-		return
-	}
+	session, _ := h.sessionStore.Get(ctx.Request, "session")
 
-	// Вызовем функцию Split в которой укажем разделить нашу строку по пробелам
-	headerParts := strings.Split(header, " ")
-	// При корректном хедере эта функция должна вернуть массив длиной в 2 элемента
-	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
-		// при ошибках возвращаем Status Code 401 - пользователь не авторизован
-		h.newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
-		return
-	}
-
-	// теперь нужно распарсить token
-	if len(headerParts[1]) == 0 {
-		h.newErrorResponse(c, http.StatusUnauthorized, "token is empty")
-		return
-	}
-
-	// Метод ParseToken принимает token в качестве аргумента
-	// и возвращать id пользователя при успешном парcинге
-	userId, err := jwt_processing.ParseToken(headerParts[1])
-	if err != nil {
-		h.newErrorResponse(c, http.StatusUnauthorized, err.Error())
+	// Check if user is authenticated
+	userId, ok := session.Values["userId"].(int)
+	if !ok || userId == 0 {
+		h.newErrorResponse(ctx, http.StatusUnauthorized, "error: no userId into session")
 		return
 	}
 
 	// Если операция ParseToken успешна - запишем значение id в контекст.
 	// Это мы делаем для того чтобы иметь доступ к id пользователям (которые делают запрос)
 	// в последующих обработчиках, которые вызываются после данной прослойки.
-	c.Set(userCtx, userId)
+	ctx.Set(userCtx, userId)
 }
 
 // Функция, достающая ID пользователя из контекста, обрабатывает ошибки и выводит response.

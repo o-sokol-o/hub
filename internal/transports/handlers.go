@@ -2,6 +2,7 @@ package handler_api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
 
 	_ "github.com/AquaEngineering/AquaHub/docs"
@@ -18,9 +19,10 @@ type Handler struct {
 	serviceChecklistItem   IServiceChecklistItem
 	serviceAquahubList     IServiceAquahubList
 
-	Router *gin.Engine
-	cache  domain.Cache
-	log    *logrus.Logger
+	Router       *gin.Engine
+	cache        domain.Cache
+	log          *logrus.Logger
+	sessionStore *sessions.CookieStore
 }
 
 // Внедрение зависимостей:
@@ -38,7 +40,9 @@ func NewHandler(log *logrus.Logger, cache domain.Cache, a IServiceAuthentication
 }
 
 // Инициализация роутера с end-point_ами
-func (h *Handler) InitRoutes() error {
+func (h *Handler) InitRoutes(sessionKey string) error {
+
+	h.sessionStore = sessions.NewCookieStore([]byte(sessionKey))
 
 	// Set the router as the default one provided by Gin
 	router := gin.Default()
