@@ -3,6 +3,8 @@ package handler_api
 import (
 	"net/http"
 
+	grpcLog "github.com/o-sokol-o/grpc_log_server/pkg/domain"
+
 	"github.com/AquaEngineering/AquaHub/internal/domain"
 	"github.com/AquaEngineering/AquaHub/pkg/jwt_processing"
 
@@ -56,6 +58,8 @@ func (h *Handler) signUp(ctx *gin.Context) {
 		return
 	}
 
+	h.GrpcLog.Send(grpcLog.LogRequest_CREATE, grpcLog.LogRequest_USER, int64(id))
+
 	// Если пользователь существует, то в ответе получаем токен.
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"token": "Bearer " + jwt_token,
@@ -103,6 +107,8 @@ func (h *Handler) signIn(ctx *gin.Context) {
 		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	h.GrpcLog.Send(grpcLog.LogRequest_CREATE, grpcLog.LogRequest_USER, int64(user.ID))
 
 	// Если пользователь существует, то в ответе получаем токен.
 	ctx.JSON(http.StatusOK, map[string]interface{}{

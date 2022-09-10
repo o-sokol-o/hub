@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
+	grpcLog "github.com/o-sokol-o/grpc_log_server/pkg/client"
+
 	_ "github.com/AquaEngineering/AquaHub/docs"
 	"github.com/AquaEngineering/AquaHub/internal/domain"
 	swaggerFiles "github.com/swaggo/files"
@@ -18,9 +20,10 @@ type Handler struct {
 	serviceChecklistItem   IServiceChecklistItem
 	serviceAquahubList     IServiceAquahubList
 
-	Router *gin.Engine
-	cache  domain.Cache
-	log    *logrus.Logger
+	Router  *gin.Engine
+	cache   domain.Cache
+	log     *logrus.Logger
+	GrpcLog *grpcLog.GrpcClient
 }
 
 // Внедрение зависимостей:

@@ -5,6 +5,9 @@ import (
 	"strconv"
 
 	"github.com/AquaEngineering/AquaHub/internal/domain"
+
+	grpcLog "github.com/o-sokol-o/grpc_log_server/pkg/domain"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,6 +52,8 @@ func (h *Handler) createList(ctx *gin.Context) {
 		return
 	}
 
+	h.GrpcLog.Send(grpcLog.LogRequest_CREATE, grpcLog.LogRequest_CHECKLIST, int64(id))
+
 	// Добавим тело ответа при успешном запросе, в котором будем возвращать ID созданного списка.
 	ctx.JSON(http.StatusOK, idResponse{
 		ID: id,
@@ -80,6 +85,8 @@ func (h *Handler) getAllLists(ctx *gin.Context) {
 		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	h.GrpcLog.Send(grpcLog.LogRequest_GET, grpcLog.LogRequest_CHECKLIST, 0)
 
 	// Для response используем дополнительную структуру getAllListsResponse,
 	// в которой будет поле дата, типа слайса списков.
@@ -126,6 +133,8 @@ func (h *Handler) getListById(ctx *gin.Context) {
 		return
 	}
 
+	h.GrpcLog.Send(grpcLog.LogRequest_GET, grpcLog.LogRequest_CHECKLIST, int64(id))
+
 	ctx.JSON(http.StatusOK, list)
 }
 
@@ -168,6 +177,8 @@ func (h *Handler) updateListById(ctx *gin.Context) {
 		return
 	}
 
+	h.GrpcLog.Send(grpcLog.LogRequest_UPDATE, grpcLog.LogRequest_CHECKLIST, int64(input.ID))
+
 	ctx.JSON(http.StatusOK, statusResponse{"ok"})
 }
 
@@ -203,6 +214,8 @@ func (h *Handler) deleteListById(ctx *gin.Context) {
 		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	h.GrpcLog.Send(grpcLog.LogRequest_DELETE, grpcLog.LogRequest_CHECKLIST, int64(id))
 
 	ctx.JSON(http.StatusOK, statusResponse{
 		Status: "ok",

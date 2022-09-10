@@ -18,6 +18,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
+	grpcLog "github.com/o-sokol-o/grpc_log_server/pkg/client"
+
 	repositories "github.com/AquaEngineering/AquaHub/internal/repositories/pgsql"
 	services "github.com/AquaEngineering/AquaHub/internal/services"
 	handlers "github.com/AquaEngineering/AquaHub/internal/transports"
@@ -79,6 +81,8 @@ type AppContext struct {
 //=====================================================================================================================
 
 func NewApplication(log *logrus.Logger) (*AppContext, error) {
+
+	var err error
 
 	var app = AppContext{
 		log:      log,
@@ -171,8 +175,6 @@ func NewApplication(log *logrus.Logger) (*AppContext, error) {
 
 	// =============   Инициализируем кэш и подключаемся к БД   =============
 	{
-		var err error
-
 		// Кэш
 		app.cacheMemory = cachememory.New(3600) // 1 hour
 
@@ -207,7 +209,14 @@ func NewApplication(log *logrus.Logger) (*AppContext, error) {
 			services.NewServices(
 				repositories.NewRepositories(app.log, app.cacheMemory, app.masterDB)))
 
-	err := app.handlers.InitRoutes()
+	// Set up a connection to the server.
+	target := "localhost:9000"
+	app.handlers.GrpcLog, err = grpcLog.New(target)
+	if err != nil {
+		return nil, err //log.Fatalf("server: %s\n%v\n", target, err)
+	}
+
+	err = app.handlers.InitRoutes()
 	if err != nil {
 		log.Printf("InitRoutes error: %s", err.Error())
 		return nil, err
@@ -253,4 +262,6 @@ func (app *AppContext) Shutdown() {
 	}
 
 	app.log.Print("Application shutting down ended")
+
+	app.handlers.GrpcLog.Close()
 }
