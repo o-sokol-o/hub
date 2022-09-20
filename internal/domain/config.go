@@ -103,6 +103,7 @@ type CfgBuildInfo struct {
 }
 type CfgApplication struct {
 	Env       string `default:"dev" envconfig:"ENV"`
+	LogURI    string `default:"localhost:9000" envconfig:"LOGURI"`
 	HTTP      CfgHTTP
 	HTTPS     CfgHTTPS
 	Service   CfgService
