@@ -81,7 +81,6 @@ type AppContext struct {
 //=====================================================================================================================
 
 func NewApplication(log *logrus.Logger) (*AppContext, error) {
-
 	var err error
 
 	var app = AppContext{
@@ -210,10 +209,9 @@ func NewApplication(log *logrus.Logger) (*AppContext, error) {
 				repositories.NewRepositories(app.log, app.cacheMemory, app.masterDB)))
 
 	// Set up a connection to the server.
-	target := "localhost:9000"
-	app.handlers.GrpcLog, err = grpcLog.New(target)
+	app.handlers.GrpcLog, err = grpcLog.New(app.cfg.LogURI)
 	if err != nil {
-		return nil, err //log.Fatalf("server: %s\n%v\n", target, err)
+		return nil, err
 	}
 
 	err = app.handlers.InitRoutes()
