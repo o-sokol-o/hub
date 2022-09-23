@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/AquaEngineering/AquaHub/internal/domain"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
-//go:generate mockgen -source=service.go -destination=mocks/mock.go
+//go:generate mockgen -source=irepositories.go -destination=mocks/mock.go
 
 // Authorization - Авториза́ция — предоставление определённому лицу или группе лиц прав на
 // выполнение определённых действий; а также процесс проверки данных прав при попытке
@@ -34,7 +34,7 @@ type IStoreAuthorization interface {
 }
 
 type IStoreChecklist interface {
-	Create(userId int, list domain.UpdateChecklist) (int, error)
+	Create(userId int, list domain.CreateChecklist) (int, error)
 	// GetAll_Checklist() ([]domain.Checklist, error)
 	GetAll_ChecklistOfUser(userId int) ([]domain.Checklist, error)
 	GetById(userId, listId int) (*domain.Checklist, error)

@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/AquaEngineering/AquaHub/pkg/jwt_processing"
 	"github.com/gin-gonic/gin"
+	"github.com/o-sokol-o/hub/pkg/jwt_processing"
 )
 
 const (
@@ -62,7 +62,8 @@ func (h *Handler) userIdentity_middleware(c *gin.Context) {
 	// и возвращать id пользователя при успешном парcинге
 	userId, err := jwt_processing.ParseToken(headerParts[1])
 	if err != nil {
-		h.newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		h.log.Println("invalid parse token: " + err.Error())
+		h.newErrorResponse(c, http.StatusUnauthorized, "invalid parse token")
 		return
 	}
 

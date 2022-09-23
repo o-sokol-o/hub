@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
 	"github.com/jmoiron/sqlx"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
 type ChecklistItemPostgres struct {

@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
 	"github.com/gin-gonic/gin"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
 type ChecklistsResponse struct {
@@ -31,13 +31,15 @@ func (h *Handler) createList(ctx *gin.Context) {
 	userId, err := getUserIdFromContext(ctx)
 	if err != nil {
 		// добавим обработку случая когда в контексте нет id пользователя
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		h.log.Println("User is unauthorized: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusUnauthorized, "user is unauthorized") // 401
 		return
 	}
 
-	var input domain.UpdateChecklist
+	var input domain.CreateChecklist
 	if err := ctx.BindJSON(&input); err != nil {
-		h.newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		h.log.Println("User send invalid input body: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusBadRequest, "User send invalid input body")
 		return
 	}
 
@@ -45,7 +47,8 @@ func (h *Handler) createList(ctx *gin.Context) {
 	// в который передадим наши данные, полученные из токена аутентификации и тела запроса.
 	id, err := h.serviceChecklist.Create(userId, input)
 	if err != nil {
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		h.log.Println("service failure: something went wrong: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusInternalServerError, "service failure: something went wrong") // http.StatusInternalServerError = 500
 		return
 	}
 

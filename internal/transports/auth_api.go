@@ -3,8 +3,8 @@ package handler_api
 import (
 	"net/http"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
-	"github.com/AquaEngineering/AquaHub/pkg/jwt_processing"
+	"github.com/o-sokol-o/hub/internal/domain"
+	"github.com/o-sokol-o/hub/pkg/jwt_processing"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,12 +32,14 @@ func (h *Handler) signUp(ctx *gin.Context) {
 	// в которую кладёт распарсенный и предварительно валидированный принятый json
 	// Или 400 - ошибка на стороне клиента
 	if err := ctx.BindJSON(&input); err != nil {
-		h.newErrorResponse(ctx, http.StatusBadRequest, "User send invalid input body: "+err.Error()) // http.StatusBadRequest = 400
+		h.log.Println("User send invalid input body: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusBadRequest, "User send invalid input body") // http.StatusBadRequest = 400
 		return
 	}
 
 	if err := input.Validate(); err != nil {
-		h.newErrorResponse(ctx, http.StatusBadRequest, "User send invalid input body: "+err.Error()) // http.StatusBadRequest = 400
+		h.log.Println("User send invalid input body: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusBadRequest, "User send invalid input body") // http.StatusBadRequest = 400
 		return
 	}
 
@@ -46,13 +48,15 @@ func (h *Handler) signUp(ctx *gin.Context) {
 	id, err := h.serviceAuthentications.CreateUser(input)
 	if err != nil {
 		// внутренняя ошибка на сервере
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error()) // http.StatusInternalServerError = 500
+		h.log.Println("service failure: something went wrong: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusInternalServerError, "service failure: something went wrong") // http.StatusInternalServerError = 500
 		return
 	}
 
 	jwt_token, err := jwt_processing.GenerateToken(id)
 	if err != nil {
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error()) // http.StatusInternalServerError = 500
+		h.log.Println("service failure: something went wrong: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusInternalServerError, "service failure: something went wrong") // http.StatusInternalServerError = 500
 		return
 	}
 
@@ -86,7 +90,8 @@ func (h *Handler) signIn(ctx *gin.Context) {
 	var input signInInput
 
 	if err := ctx.BindJSON(&input); err != nil {
-		h.newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		h.log.Println("User send invalid input body: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusBadRequest, "User send invalid input body") // http.StatusBadRequest = 400
 		return
 	}
 
@@ -94,13 +99,15 @@ func (h *Handler) signIn(ctx *gin.Context) {
 	user, err := h.serviceAuthentications.Authenticate(input.Email, input.Password)
 	if err != nil {
 		// Возвращаем ошибку SQL из БД
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		h.log.Println("service failure: something went wrong: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusInternalServerError, "service failure: something went wrong") // http.StatusInternalServerError = 500
 		return
 	}
 
 	jwt_token, err = jwt_processing.GenerateToken(user.ID)
 	if err != nil {
-		h.newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		h.log.Println("service failure: something went wrong: " + err.Error())
+		h.newErrorResponse(ctx, http.StatusInternalServerError, "service failure: something went wrong") // http.StatusInternalServerError = 500
 		return
 	}
 

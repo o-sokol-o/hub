@@ -8,21 +8,21 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	cmd_line "github.com/AquaEngineering/AquaHub/pkg/cmd_line"
-	database "github.com/AquaEngineering/AquaHub/pkg/database/postgres"
-	webserver "github.com/AquaEngineering/AquaHub/pkg/server"
 	cachememory "github.com/o-sokol-o/cache-memory"
+	cmd_line "github.com/o-sokol-o/hub/pkg/cmd_line"
+	database "github.com/o-sokol-o/hub/pkg/database/postgres"
+	webserver "github.com/o-sokol-o/hub/pkg/server"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	repositories "github.com/AquaEngineering/AquaHub/internal/repositories/pgsql"
-	services "github.com/AquaEngineering/AquaHub/internal/services"
-	handlers "github.com/AquaEngineering/AquaHub/internal/transports"
+	repositories "github.com/o-sokol-o/hub/internal/repositories/pgsql"
+	services "github.com/o-sokol-o/hub/internal/services"
+	handlers "github.com/o-sokol-o/hub/internal/transports"
 
-	config "github.com/AquaEngineering/AquaHub/internal/domain"
+	config "github.com/o-sokol-o/hub/internal/domain"
 )
 
 //=====================================================================================================================

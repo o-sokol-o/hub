@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
 	"github.com/jmoiron/sqlx"
+	"github.com/o-sokol-o/hub/internal/domain"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,7 +20,7 @@ func NewChecklistPostgres(log *logrus.Logger, db *sqlx.DB) *ChecklistPostgres {
 	return &ChecklistPostgres{log: log, db: db}
 }
 
-func (r *ChecklistPostgres) Create(userId int, list domain.UpdateChecklist) (int, error) {
+func (r *ChecklistPostgres) Create(userId int, list domain.CreateChecklist) (int, error) {
 
 	// Транзакция это последовательность нескольких операций,
 	// которая рассматривается как одна операция.
@@ -35,8 +35,11 @@ func (r *ChecklistPostgres) Create(userId int, list domain.UpdateChecklist) (int
 
 	query := fmt.Sprintf(`SELECT id FROM %s WHERE signup_user_id = $1`, accountTable)
 	var account_id int
-	err = r.db.Get(&account_id, query, userId)
-	if err != nil {
+	// err = r.db.Get(&account_id, query, userId)
+	// if err != nil {
+
+	row := tx.QueryRow(query, userId)
+	if err := row.Scan(&account_id); err != nil {
 		tx.Rollback() // В случае ошибок мы вызываем метод Rollback, которая откатывает все изменения БД до начала выполнения транзакции.
 
 		r.log.Errorf("db: error Create Checklist: %s", err.Error())
@@ -46,7 +49,7 @@ func (r *ChecklistPostgres) Create(userId int, list domain.UpdateChecklist) (int
 	// Возвращаем id созданного списка
 	var id int
 	createListQuery := fmt.Sprintf("INSERT INTO %s (account_id, title, description) VALUES ($1, $2, $3) RETURNING id", checklistsTable)
-	row := tx.QueryRow(createListQuery, account_id, list.Title, list.Description)
+	row = tx.QueryRow(createListQuery, account_id, list.Title, list.Description)
 	if err := row.Scan(&id); err != nil {
 		tx.Rollback()
 

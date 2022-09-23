@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/AquaEngineering/AquaHub/internal/domain"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
 type ChecklistItemService struct {

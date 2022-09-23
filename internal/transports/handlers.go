@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	_ "github.com/AquaEngineering/AquaHub/docs"
-	"github.com/AquaEngineering/AquaHub/internal/domain"
+	_ "github.com/o-sokol-o/hub/docs"
+	"github.com/o-sokol-o/hub/internal/domain"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

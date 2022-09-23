@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
 	"github.com/gin-gonic/gin"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
 func (h *Handler) createItem(ctx *gin.Context) {

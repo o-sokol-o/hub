@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
+	"github.com/o-sokol-o/hub/internal/domain"
 
 	"github.com/gin-gonic/gin"
 )

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	// account "github.com/AquaEngineering/AquaHub/int/account"
-	// "github.com/AquaEngineering/AquaHub/int/user_account"
-	"github.com/AquaEngineering/AquaHub/internal/domain"
-	"github.com/AquaEngineering/AquaHub/pkg/randomstring"
+	// account "github.com/o-sokol-o/hub/int/account"
+	// "github.com/o-sokol-o/hub/int/user_account"
+	"github.com/o-sokol-o/hub/internal/domain"
+	"github.com/o-sokol-o/hub/pkg/randomstring"
 
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/jmoiron/sqlx"

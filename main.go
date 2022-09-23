@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AquaEngineering/AquaHub/internal/app"
+	"github.com/o-sokol-o/hub/internal/app"
 	"github.com/sirupsen/logrus"
 )
 

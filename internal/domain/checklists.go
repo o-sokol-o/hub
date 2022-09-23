@@ -48,6 +48,12 @@ func (i Checklist) Validate() error {
 	return nil
 }
 
+type CreateChecklist struct {
+	Title       *string          `json:"title" binding:"required" validate:"required" example:"Title Checklist"`
+	Description *string          `json:"description,omitempty" example:"Description Checklist"`
+	Status      *ChecklistStatus `json:"status,omitempty" validate:"omitempty,oneof=active disabled" enums:"active,disabled" swaggertype:"string" example:"active"`
+}
+
 type UpdateChecklist struct {
 	ID          int              `json:"-"`
 	Title       *string          `json:"title" example:"Title Checklist"`

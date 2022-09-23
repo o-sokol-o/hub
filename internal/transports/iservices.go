@@ -1,7 +1,7 @@
 package handler_api
 
 import (
-	"github.com/AquaEngineering/AquaHub/internal/domain"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
 // Интерфейсы должны объявляться на том уровне абстракции (в том файле),
@@ -9,7 +9,7 @@ import (
 
 // Определение интерфейсов к сущностям бизнес логики
 
-//go:generate mockgen -source=service.go -destination=mocks/mock.go
+//go:generate mockgen -source=iservices.go -destination=mocks/mock.go
 
 // Authorization - Авториза́ция — предоставление определённому лицу или группе лиц прав на
 // выполнение определённых действий; а также процесс проверки данных прав при попытке
@@ -39,7 +39,7 @@ type IServiceAuthentications interface {
 }
 
 type IServiceChecklist interface {
-	Create(userId int, list domain.UpdateChecklist) (int, error)
+	Create(userId int, list domain.CreateChecklist) (int, error)
 	// GetAllChecklist() ([]domain.Checklist, error)
 	GetAllChecklistOfUser(userId int) ([]domain.Checklist, error)
 	GetById(userId, listId int) (*domain.Checklist, error)

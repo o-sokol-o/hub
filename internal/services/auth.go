@@ -4,8 +4,8 @@ import (
 	"crypto/sha1"
 	"fmt"
 
-	"github.com/AquaEngineering/AquaHub/internal/domain"
 	cachememory "github.com/o-sokol-o/cache-memory"
+	"github.com/o-sokol-o/hub/internal/domain"
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/AquaEngineering/AquaHub/internal/domain"
+	"github.com/o-sokol-o/hub/internal/domain"
 )
 
 // Сервис для работы со списками
@@ -19,7 +19,7 @@ func NewChecklistService(repo IStoreChecklist) *ChecklistService {
 // При создании списка мы будем передавать данные на следующий уровень - в репозиторий,
 // поэтому в сервисе мы лишь будем возвращать аналогичный метод репозитория.
 // Дополнительной логики мы реализовывать не будем.
-func (s *ChecklistService) Create(userId int, list domain.UpdateChecklist) (int, error) {
+func (s *ChecklistService) Create(userId int, list domain.CreateChecklist) (int, error) {
 	return s.repo.Create(userId, list)
 }
 
