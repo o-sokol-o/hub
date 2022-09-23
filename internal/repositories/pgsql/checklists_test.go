@@ -14,7 +14,7 @@ func getPointerString(s string) *string {
 	return &s
 }
 
-func TestChecklistListPostgres_Create(t *testing.T) {
+func TestChecklistPostgres_Create(t *testing.T) {
 	db, mock, err := sqlmock.Newx()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
